@@ -932,5 +932,39 @@ namespace Microsoft.EntityFrameworkCore.ChangeTracking.Internal
                 entry.AcceptChanges();
             }
         }
+
+        /// <summary>
+        ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
+        ///     directly from your code. This API may change or be removed in future releases.
+        /// </summary>
+        public event Action<object, EntityTrackedEventArgs> Tracked;
+
+        /// <summary>
+        ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
+        ///     directly from your code. This API may change or be removed in future releases.
+        /// </summary>
+        public virtual void OnTracked([NotNull] InternalEntityEntry internalEntityEntry, bool fromQuery)
+        {
+            var @event = Tracked;
+
+            @event?.Invoke(Context.ChangeTracker, new EntityTrackedEventArgs(internalEntityEntry, fromQuery));
+        }
+
+        /// <summary>
+        ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
+        ///     directly from your code. This API may change or be removed in future releases.
+        /// </summary>
+        public event Action<object, EntityStateEventArgs> StateChanged;
+
+        /// <summary>
+        ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
+        ///     directly from your code. This API may change or be removed in future releases.
+        /// </summary>
+        public virtual void OnStateChanged([NotNull] InternalEntityEntry internalEntityEntry, EntityState oldState)
+        {
+            var @event = StateChanged;
+
+            @event?.Invoke(Context.ChangeTracker, new EntityStateEventArgs(internalEntityEntry, oldState, internalEntityEntry.EntityState));
+        }
     }
 }
